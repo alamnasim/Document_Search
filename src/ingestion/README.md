@@ -238,10 +238,10 @@ cleaned = clean_extracted_text(raw_text)
 ## 📊 Performance
 
 ### Processing Speed
-- **PDF**: ~2-5 seconds per page (with OCR)
-- **DOCX**: ~0.5-1 second
-- **XLSX**: ~0.3-0.5 seconds per sheet
-- **Images**: ~3-4 seconds (with OCR)
+- **PDF**: ~1.3-1.8 seconds per page (with PaddleOCR)
+- **DOCX**: ~0.2-0.3 seconds
+- **XLSX**: ~0.02-0.05 seconds per sheet
+- **Images**: ~0.3-0.5 seconds (with PaddleOCR)
 - **TXT**: ~0.1-0.3 seconds
 
 ### Deduplication
