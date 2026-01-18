@@ -1,8 +1,10 @@
 #  Document Search System - Complete Setup Guide
 
-## Demo Video
+## 🎥 Demo Video
 
-<div style="padding:75% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1155751169?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="demo_video"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+[![Watch Demo Video](https://vumbnail.com/1155751169.jpg)](https://vimeo.com/1155751169)
+
+*Click the thumbnail above to watch the demo video*
 
 > **Quick Start**: See [QUICKSTART.md](QUICKSTART.md) for 5-minute setup (experienced users)  
 > **Verify Setup**: Run `python tests/setup_test.py` to validate all services and configuration
