@@ -1,0 +1,20 @@
+# CPU-Optimized Embedding API Requirements
+# For Docker deployment
+
+# Core FastAPI
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# Embedding model dependencies
+sentence-transformers==3.0.0
+transformers==4.35.0
+
+# Basic dependencies
+numpy==1.24.3
+scikit-learn==1.3.2
+
+# For HTTP requests
+requests==2.32.3
+
+# PyTorch will be installed as CPU-only in Dockerfile
