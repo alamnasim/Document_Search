@@ -2,80 +2,12 @@
 
 High-performance FastAPI service for searching and retrieving indexed documents from Elasticsearch with advanced optimization features.
 
-## 🏗️ Architecture
-
-```mermaid
-flowchart TB
-    subgraph Client["👤 Client Applications"]
-        WebUI[Web UI]
-        Mobile[Mobile App]
-        CLI[CLI Tool]
-    end
-    
-    subgraph API["🚀 FastAPI Query Service"]
-        Router[API Router]
-        Schema[Request/Response Schema]
-        SearchEngine[Search Engine Service]
-    end
-    
-    subgraph Features["⚡ Query Features"]
-        Fuzz[Fuzziness Control]
-        Filter[Score Filtering]
-        Fields[Field Specification]
-        Size[Result Size Control]
-        Snippet[Content Snippets]
-    end
-    
-    subgraph Storage["💾 Data Layer"]
-        ES[(Elasticsearch)]
-        S3[(S3 Storage)]
-    end
-    
-    WebUI -->|HTTP POST| Router
-    Mobile -->|HTTP POST| Router
-    CLI -->|HTTP POST| Router
-    
-    Router -->|Validate| Schema
-    Schema -->|Execute| SearchEngine
-    
-    SearchEngine -->|Apply| Fuzz
-    SearchEngine -->|Apply| Filter
-    SearchEngine -->|Apply| Fields
-    SearchEngine -->|Apply| Size
-    SearchEngine -->|Apply| Snippet
-    
-    Fuzz -->|Query| ES
-    ES -->|Results| SearchEngine
-    SearchEngine -->|Generate URL| S3
-    S3 -->|Presigned URL| SearchEngine
-    SearchEngine -->|Format| Router
-    Router -->|JSON Response| Client
-    
-    style ES fill:#005571
-    style S3 fill:#FF9900
-    style SearchEngine fill:#4CAF50
-    style Fuzz fill:#2196F3
-    style Filter fill:#2196F3
-    style Fields fill:#2196F3
-    style Size fill:#2196F3
-    style Snippet fill:#2196F3
-```
-
 ## ✨ Features
 
 ### 🔎 Search Capabilities
-- **Full-Text Search**: Multi-field search across content, filename, file type, file path
-- **Fuzzy Matching**: Typo-tolerant search with configurable fuzziness (0, 1, 2, AUTO)
-- **Exact Matching**: Fast exact term matching (3x faster than fuzzy)
+- **Exact Matching**: Fast exact term matching
 - **Phrase Search**: Search for exact phrases with quotes
 - **Multi-Word Search**: Intelligent multi-term queries
-
-### ⚡ Performance Optimizations
-- **Size Control**: Limit results (1-100) for faster queries
-- **Field Specification**: Search specific fields only (10x faster)
-- **Min Score Filtering**: Filter low-relevance results (query-level)
-- **Fuzziness Control**: Reduce typo tolerance for speed
-- **Content Snippets**: Exclude large fields, return highlights only
 
 ### 📄 Response Features
 - **S3 Presigned URLs**: 1-hour expiry, secure file access
@@ -84,33 +16,6 @@ flowchart TB
 - **Metadata**: File name, type, path, upload date
 - **Timing Metrics**: ES query time + client response time
 
-###  Query Examples
-```json
-// Speed-optimized (2-5ms)
-{
-  "query": "whale",
-  "size": 5,
-  "fuzziness": "0",
-  "fields": ["content"],
-  "use_snippets": true
-}
-
-// Quality-optimized
-{
-  "query": "endangered species habitat",
-  "size": 20,
-  "fuzziness": "AUTO",
-  "min_score": 2.0,
-  "use_snippets": true
-}
-
-// Typo-tolerant
-{
-  "query": "speling mistake",
-  "fuzziness": "2",
-  "min_score": 1.0
-}
-```
 
 ## 🚦 Getting Started
 
@@ -183,7 +88,6 @@ nohup python run_query_api.py > query_api.log 2>&1 &
 - **Base URL**: http://localhost:8000
 - **Search Endpoint**: POST /api/v1/search
 - **Health Check**: GET /health
-- **API Docs**: http://localhost:8000/docs
 
 ## 📂 Project Structure
 
@@ -216,7 +120,6 @@ Search for documents with advanced optimization options.
   "query": "search terms",           // Required: Search query string
   "size": 10,                        // Optional: Results to return (1-100, default 10)
   "fields": ["content", "file_name"], // Optional: Fields to search (default all)
-  "fuzziness": "AUTO",               // Optional: 0, 1, 2, AUTO (default AUTO)
   "min_score": 0.0,                  // Optional: Minimum relevance score (default 0.0)
   "use_snippets": true               // Optional: Return snippets vs full content (default true)
 }
@@ -247,7 +150,6 @@ Search for documents with advanced optimization options.
 ```
 
 **Performance Tips**:
-- Use `fuzziness=0` for exact matches (3x faster)
 - Limit `size` to needed results only
 - Specify `fields` to search fewer fields (10x faster)
 - Set `min_score` to filter low-relevance results
@@ -265,27 +167,6 @@ Health check endpoint.
   "timestamp": "2026-01-18T10:30:00"
 }
 ```
-
-## 📊 Performance
-
-### Query Speed
-- **Exact match** (fuzziness=0): 2-3ms
-- **Field-specific**: 1-4ms
-- **Min score filtered**: 1-4ms
-- **Single term fuzzy**: 4-22ms
-- **Multi-word search**: 62-79ms
-- **Very long query** (13 terms): 208ms
-
-### Optimization Impact
-- **Exact matching**: ~3x faster than fuzzy
-- **Field limitation**: ~10x faster than all fields
-- **Size control**: ~13x faster (size=1 vs size=100)
-- **Combined optimization**: Up to 50x faster than worst case
-
-### Throughput
-- **Simple queries**: ~200-500 requests/second
-- **Complex queries**: ~10-50 requests/second
-- **Concurrent users**: Supports 100+ simultaneous connections
 
 ## 🧪 Testing
 
@@ -317,7 +198,6 @@ curl -X POST http://localhost:8000/api/v1/search \
   -d '{
     "query": "whale",
     "size": 5,
-    "fuzziness": "0",
     "fields": ["content"],
     "use_snippets": true
   }'
@@ -332,7 +212,6 @@ response = requests.post(
     json={
         "query": "endangered species",
         "size": 10,
-        "fuzziness": "AUTO",
         "min_score": 2.0
     }
 )
@@ -357,14 +236,6 @@ class DocumentSearchClient:
             json={"query": query, **kwargs}
         )
         return response.json()
-    
-    def search_exact(self, query, size=10):
-        return self.search(
-            query, 
-            size=size, 
-            fuzziness="0", 
-            use_snippets=True
-        )
 
 # Usage
 client = DocumentSearchClient()
@@ -377,7 +248,6 @@ interface SearchRequest {
   query: string;
   size?: number;
   fields?: string[];
-  fuzziness?: string;
   min_score?: number;
   use_snippets?: boolean;
 }
@@ -391,13 +261,6 @@ async function searchDocuments(request: SearchRequest) {
   return await response.json();
 }
 
-// Usage
-const results = await searchDocuments({
-  query: 'whale',
-  size: 10,
-  fuzziness: '0'
-});
-```
 
 ## 🐛 Troubleshooting
 
@@ -440,20 +303,6 @@ curl http://localhost:9200/documents_v2/_search?size=1
 curl -X POST http://localhost:9200/documents_v2/_search \
   -H "Content-Type: application/json" \
   -d '{"query": {"match": {"content": "whale"}}}'
-```
-
-### Issue: Slow query performance
-
-**Solution**: Apply optimizations
-```json
-{
-  "query": "your_query",
-  "size": 10,           // Limit results
-  "fuzziness": "0",     // Exact matching
-  "fields": ["content"], // Specific field
-  "min_score": 1.0,     // Filter low scores
-  "use_snippets": true  // Exclude full content
-}
 ```
 
 ## 📈 Monitoring
