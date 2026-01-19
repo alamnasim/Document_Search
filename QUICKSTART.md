@@ -1,7 +1,5 @@
 # 🚀 Quick Start Guide
 
-## ⚡ 5-Minute Setup
-
 ### Step 1: Clone & Navigate
 ```bash
 cd /home/nasim-pc/Desktop/Document_Search
