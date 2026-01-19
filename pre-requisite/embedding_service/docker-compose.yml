@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  embedding-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: embedding_service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      # Number of workers (default: 1, increase for production)
+      - WORKERS=1
+      # Log level (debug, info, warning, error)
+      - LOG_LEVEL=info
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - embedding-network
+
+networks:
+  embedding-network:
+    driver: bridge
